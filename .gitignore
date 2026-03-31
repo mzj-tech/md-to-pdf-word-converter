@@ -1,12 +1,3 @@
-# Output directories
-output/
-*.pdf
-*.docx
-
-# Temporary files
-*.temp.docx
-temp.docx
-
 # Python
 __pycache__/
 *.py[cod]
