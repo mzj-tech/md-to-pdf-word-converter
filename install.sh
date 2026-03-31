@@ -36,7 +36,6 @@ git clone --depth 1 https://github.com/mzj-tech/md-to-pdf-word-converter.git "$T
 echo -e "${BLUE}📋 Copying files to current directory...${NC}"
 cp -r "$TEMP_DIR/scripts" .
 cp "$TEMP_DIR/.md2pdf.js" .
-cp -r "$TEMP_DIR/.pandoc" .
 
 # Make scripts executable
 chmod +x scripts/*.sh scripts/*.py
