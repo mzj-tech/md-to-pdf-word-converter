@@ -25,20 +25,35 @@ if [ ! -d .git ]; then
   fi
 fi
 
+# Create installation directory
+INSTALL_DIR="file_conversion_tool"
+echo -e "${BLUE}📥 Downloading files...${NC}"
+
+# Check if directory already exists
+if [ -d "$INSTALL_DIR" ]; then
+  echo -e "${YELLOW}⚠️  Warning: $INSTALL_DIR already exists${NC}"
+  read -p "Overwrite? (y/n) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 1
+  fi
+  rm -rf "$INSTALL_DIR"
+fi
+
 # Create temporary directory
 TEMP_DIR=$(mktemp -d)
-echo -e "${BLUE}📥 Downloading files...${NC}"
 
 # Clone the repository
 git clone --depth 1 https://github.com/mzj-tech/md-to-pdf-word-converter.git "$TEMP_DIR" 2>/dev/null
 
-# Copy necessary files
-echo -e "${BLUE}📋 Copying files to current directory...${NC}"
-cp -r "$TEMP_DIR/scripts" .
-cp "$TEMP_DIR/.md2pdf.js" .
+# Create installation directory and copy files
+echo -e "${BLUE}📋 Installing to $INSTALL_DIR/...${NC}"
+mkdir -p "$INSTALL_DIR"
+cp -r "$TEMP_DIR/scripts" "$INSTALL_DIR/"
+cp "$TEMP_DIR/.md2pdf.js" "$INSTALL_DIR/"
 
 # Make scripts executable
-chmod +x scripts/*.sh scripts/*.py
+chmod +x "$INSTALL_DIR/scripts"/*.sh "$INSTALL_DIR/scripts"/*.py
 
 echo -e "${GREEN}✅ Files installed!${NC}"
 echo ""
@@ -106,13 +121,13 @@ fi
 echo ""
 echo -e "${BLUE}📖 Usage:${NC}"
 echo "  Convert to PDF:"
-echo "    npx md-to-pdf --config-file .md2pdf.js your-file.md"
+echo "    npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js your-file.md"
 echo ""
 echo "  Convert to Word:"
-echo "    ./scripts/convert-to-word.sh docs/ output/"
+echo "    ./file_conversion_tool/scripts/convert-to-word.sh docs/ output/"
 echo ""
 echo "  Batch convert to PDF:"
-echo "    ./scripts/convert-to-pdf.sh docs/ output/"
+echo "    ./file_conversion_tool/scripts/convert-to-pdf.sh docs/ output/"
 echo ""
 echo -e "${BLUE}📚 Documentation:${NC}"
 echo "  https://github.com/mzj-tech/md-to-pdf-word-converter"

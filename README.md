@@ -22,11 +22,10 @@ curl -sSL https://raw.githubusercontent.com/mzj-tech/md-to-pdf-word-converter/ma
 ```
 
 This will:
-- ✅ Download all necessary files to your project
+- ✅ Downloads all the necessary files to `file_conversion_tool/` folder
 - ✅ Check for dependencies
 - ✅ Install python-docx automatically
 - ✅ Make scripts executable
-- ✅ Show you what's missing (if anything)
 
 ## 🛠️ Installation
 ### Prerequisites
@@ -53,7 +52,7 @@ pip3 install python-docx
 
 **Convert to PDF:**
 ```bash
-npx md-to-pdf --config-file .md2pdf.js folder/document.md
+npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/document.md
 ```
 
 **Convert to Word:**
@@ -62,7 +61,7 @@ npx md-to-pdf --config-file .md2pdf.js folder/document.md
 pandoc folder/document.md -o temp.docx
 
 # Step 2: Apply professional styling
-python3 scripts/style-docx.py temp.docx folder/document.docx
+python3 file_conversion_tool/scripts/style-docx.py temp.docx folder/document.docx
 
 # Step 3: Clean up
 rm temp.docx
@@ -73,10 +72,10 @@ rm temp.docx
 **Convert all files in a directory:**
 ```bash
 # PDF
-./scripts/convert-to-pdf.sh folder/ output/pdf/
+./file_conversion_tool/scripts/convert-to-pdf.sh folder/ output/pdf/
 
 # Word
-./scripts/convert-to-word.sh folder/ output/docx/
+./file_conversion_tool/scripts/convert-to-word.sh folder/ output/docx/
 ```
 
 ## 🎨 Customization
