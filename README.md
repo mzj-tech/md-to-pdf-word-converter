@@ -59,7 +59,7 @@ npx md-to-pdf --config-file .md2pdf.js folder/document.md
 **Convert to Word:**
 ```bash
 # Step 1: Convert with Pandoc
-pandoc folder/document.md -o temp.docx --reference-doc=.pandoc/reference.docx
+pandoc folder/document.md -o temp.docx
 
 # Step 2: Apply professional styling
 python3 scripts/style-docx.py temp.docx folder/document.docx
@@ -78,10 +78,6 @@ rm temp.docx
 # Word
 ./scripts/convert-to-word.sh folder/ output/docx/
 ```
-
-## 📖 Additional Documentation
-
-- **[.pandoc/README.md](.pandoc/README.md)** - Word styling customization guide
 
 ## 🎨 Customization
 ### PDF Styling
@@ -125,8 +121,6 @@ shading.set(qn('w:fill'), 'E8E8E8')  # Light gray - change this hex code
 run.font.name = 'Courier New'  # Change to any monospace font
 run.font.size = Pt(9)  # Change size
 ```
-
-See `.pandoc/README.md` for more styling customization options.
 
 ### Page Breaks in PDF
 
