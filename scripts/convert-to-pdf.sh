@@ -13,7 +13,8 @@ NC='\033[0m' # No Color
 # Default values
 SOURCE_DIR="${1:-.}"
 OUTPUT_DIR="${2:-./output/pdf}"
-CONFIG_FILE=".md2pdf.js"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="$(dirname "$SCRIPT_DIR")/.md2pdf.js"
 
 echo -e "${BLUE}📄 Markdown to PDF Batch Converter${NC}"
 echo "=================================="
