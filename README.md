@@ -52,19 +52,12 @@ pip3 install python-docx
 
 **Convert to PDF:**
 ```bash
-npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/document.md
+npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/file_name.md
 ```
 
 **Convert to Word:**
 ```bash
-# Step 1: Convert with Pandoc
-pandoc folder/document.md -o temp.docx
-
-# Step 2: Apply professional styling
-python3 file_conversion_tool/scripts/style-docx.py temp.docx folder/document.docx
-
-# Step 3: Clean up
-rm temp.docx
+./file_conversion_tool/scripts/convert-single-word.sh folder/file_name.md folder/file.docx
 ```
 
 ### Batch Conversion
