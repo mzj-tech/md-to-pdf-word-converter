@@ -1,68 +1,68 @@
-# Markdown to PDF/Word Converter
+# Markdown から PDF/Word への変換ツール
 
-**Tool-Agnostic Solution for Professional Document Generation**
+**プロフェッショナルな文書生成のためのツール非依存ソリューション**
 
-Convert Markdown files to professionally formatted PDF and Word documents. Works with any AI assistant (Kiro, Claude, Cursor) or command line.
+MarkdownファイルをプロフェッショナルにフォーマットされたPDFおよびWord文書に変換します。任意のAIアシスタント(Kiro、Claude、Cursor)またはコマンドラインで動作します。
 
-## 🎯 Features
+## 🎯 機能
 
-- Professional formatting (headers, footers, page numbers, styled tables)
-- Japanese and multilingual content support
-- Batch processing for multiple files
-- Professional table borders and alternating row shading
-- Code blocks in gray boxes
-- Public sector ready formatting
-- Works with any AI tool or manually
+- プロフェッショナルなフォーマット(ヘッダー、フッター、ページ番号、スタイル付きテーブル)
+- 日本語および多言語コンテンツのサポート
+- 複数ファイルの一括処理
+- プロフェッショナルなテーブル罫線と交互の行の網掛け
+- グレーボックス内のコードブロック
+- 公共セクター対応のフォーマット
+- 任意のAIツールまたは手動での動作
 
-## 📦 Use this tool in your project
-Run this command in your project directory
+## 📦 プロジェクトでこのツールを使用する
+プロジェクトディレクトリで以下のコマンドを実行してください
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/mzj-tech/md-to-pdf-word-converter/main/install.sh | bash
 ```
 
-This will:
-- ✅ Downloads all the necessary files to `file_conversion_tool/` folder
-- ✅ Check for dependencies
-- ✅ Install python-docx automatically
-- ✅ Make scripts executable
+これにより:
+- ✅ 必要なすべてのファイルを `file_conversion_tool/` フォルダにダウンロード
+- ✅ 依存関係をチェック
+- ✅ python-docxを自動的にインストール
+- ✅ スクリプトを実行可能にする
 
-## 🛠️ Installation
-### Prerequisites
-**For PDF Generation:**
+## 🛠️ インストール
+### 前提条件
+**PDF生成の場合:**
 ```bash
-# Install md-to-pdf
+# md-to-pdfをインストール
 npm install -g md-to-pdf
 ```
 
-**For Word Generation:**
+**Word生成の場合:**
 ```bash
-# Install Pandoc
+# Pandocをインストール
 brew install pandoc
 
-# Install Python 3
+# Python 3をインストール
 brew install python3 
 
-# Install python-docx for professional styling
+# プロフェッショナルなスタイリングのためにpython-docxをインストール
 pip3 install python-docx
 ```
 
-## 🚀 Convert the files
-### Single File Conversion
+## 🚀 ファイルを変換する
+### 単一ファイルの変換
 
-**Convert to PDF:**
+**PDFに変換:**
 ```bash
 npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/file_name.md
 ```
 
-**Convert to Word:**
+**Wordに変換:**
 ```bash
 ./file_conversion_tool/scripts/convert-single-word.sh folder/file_name.md folder/file.docx
 ```
 
-### Batch Conversion
+### 一括変換
 
-**Convert all files in a directory:**
+**ディレクトリ内のすべてのファイルを変換:**
 ```bash
 # PDF
 ./file_conversion_tool/scripts/convert-to-pdf.sh folder/ output/pdf/
@@ -71,84 +71,84 @@ npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/file_name.md
 ./file_conversion_tool/scripts/convert-to-word.sh folder/ output/docx/
 ```
 
-## 🎨 Customization
-### PDF Styling
+## 🎨 カスタマイズ
+### PDFスタイリング
 
-Edit `.md2pdf.js` to change fonts, colors, margins, or table styles.
+`.md2pdf.js` を編集して、フォント、色、余白、またはテーブルスタイルを変更します。
 
-**Example customizations:**
+**カスタマイズの例:**
 ```javascript
-// Change table font size
+// テーブルのフォントサイズを変更
 table {
-  font-size: 9pt;  // Reduce from 10pt
+  font-size: 9pt;  // 10ptから縮小
 }
 
-// Change page margins
+// ページの余白を変更
 pdf_options: {
   margin: { top: '30mm', bottom: '30mm', left: '25mm', right: '25mm' }
 }
 ```
 
-### Word Styling
+### Wordスタイリング
 
-Word documents get professional styling automatically via `scripts/style-docx.py`:
-- ✅ Tables with borders and alternating row shading
-- ✅ Code blocks in gray boxes (like PDF)
-- ✅ Professional heading styles
+Word文書は `scripts/style-docx.py` を介して自動的にプロフェッショナルなスタイリングが適用されます:
+- ✅ 罫線と交互の行の網掛けを持つテーブル
+- ✅ グレーボックス内のコードブロック(PDFと同様)
+- ✅ プロフェッショナルな見出しスタイル
 
-The styling script applies:
-- **Table borders**: Black borders with header row shading (light gray D9D9D9) and alternating row colors (F2F2F2)
-- **Code block backgrounds**: Gray boxes (E8E8E8) around code blocks (detects Pandoc's "Source Code" style)
-- **Professional spacing**: Proper indentation and padding
+スタイリングスクリプトは以下を適用します:
+- **テーブル罫線**: ヘッダー行の網掛け(ライトグレー D9D9D9)と交互の行の色(F2F2F2)を持つ黒い罫線
+- **コードブロックの背景**: コードブロック周辺のグレーボックス(E8E8E8)(Pandocの「Source Code」スタイルを検出)
+- **プロフェッショナルな間隔**: 適切なインデントとパディング
 
-**To customize Word styling**, edit `scripts/style-docx.py`:
+**Wordスタイリングをカスタマイズするには**、`scripts/style-docx.py` を編集してください:
 ```python
-# Change table header color
-shading.set(qn('w:fill'), 'D9D9D9')  # Light gray - change this hex code
+# テーブルヘッダーの色を変更
+shading.set(qn('w:fill'), 'D9D9D9')  # ライトグレー - この16進コードを変更
 
-# Change code block background
-shading.set(qn('w:fill'), 'E8E8E8')  # Light gray - change this hex code
+# コードブロックの背景を変更
+shading.set(qn('w:fill'), 'E8E8E8')  # ライトグレー - この16進コードを変更
 
-# Change code block font
-run.font.name = 'Courier New'  # Change to any monospace font
-run.font.size = Pt(9)  # Change size
+# コードブロックのフォントを変更
+run.font.name = 'Courier New'  # 任意の等幅フォントに変更
+run.font.size = Pt(9)  # サイズを変更
 ```
 
-### Page Breaks in PDF
+### PDFでの改ページ
 
-Add page breaks in your markdown to prevent awkward splits:
+Markdown内に改ページを追加して、不自然な分割を防ぎます:
 
 ```html
 <div class="page-break"></div>
 ```
 
-**Example usage:**
+**使用例:**
 ```markdown
-## Section 1
+## セクション1
 
-Content for section 1...
+セクション1のコンテンツ...
 
 <div class="page-break"></div>
 
-## Section 2
+## セクション2
 
-Content for section 2 starts on a new page...
+セクション2のコンテンツは新しいページから始まります...
 ```
 
-This ensures sections stay together and don't split across pages.
+これにより、セクションがまとまって保たれ、ページをまたいで分割されません。
 
-## 🌐 Language Support
-This tool fully supports Japanese and multilingual content:
-- Japanese characters render correctly in both PDF and Word
-- No special configuration needed
-- Works with any UTF-8 encoded markdown files
+## 🌐 言語サポート
+このツールは日本語および多言語コンテンツを完全にサポートしています:
+- 日本語文字はPDFとWordの両方で正しくレンダリングされます
+- 特別な設定は不要です
+- UTF-8エンコードされた任意のMarkdownファイルで動作します
 
-## 🤖 AI Assistant Integration
+## 🤖 AIアシスタント統合
 
-Works seamlessly with any AI assitants like Kiro, Claude Code, Cursor.
+Kiro、Claude Code、Cursorなどの任意のAIアシスタントとシームレスに動作します。
 
-Simply ask: "Convert folder/file.md to PDF" or "Convert all markdown files to Word"
+単に尋ねてください: 「folder/file.mdをPDFに変換して」または「すべてのMarkdownファイルをWordに変換して」
 
 ---
-**Version**: 1.0.0  
-**Last Updated**: 2026-03-31
+**バージョン**: 1.0.0  
+**最終更新**: 2026-03-31
