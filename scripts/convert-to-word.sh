@@ -15,8 +15,9 @@ NC='\033[0m' # No Color
 # Default values
 SOURCE_DIR="${1:-.}"
 OUTPUT_DIR="${2:-./output/docx}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REFERENCE_DOC=".pandoc/reference.docx"
-STYLE_SCRIPT="scripts/style-docx.py"
+STYLE_SCRIPT="$SCRIPT_DIR/style-docx.py"
 
 echo -e "${BLUE}📄 Markdown to Word Batch Converter${NC}"
 echo "===================================="
