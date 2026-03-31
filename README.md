@@ -136,3 +136,19 @@ Content for section 2 starts on a new page...
 ```
 
 This ensures sections stay together and don't split across pages.
+
+## 🌐 Language Support
+This tool fully supports Japanese and multilingual content:
+- Japanese characters render correctly in both PDF and Word
+- No special configuration needed
+- Works with any UTF-8 encoded markdown files
+
+## 🤖 AI Assistant Integration
+
+Works seamlessly with any AI assitants like Kiro, Claude Code, Cursor.
+
+Simply ask: "Convert folder/file.md to PDF" or "Convert all markdown files to Word"
+
+---
+**Version**: 1.0.0  
+**Last Updated**: 2026-03-31

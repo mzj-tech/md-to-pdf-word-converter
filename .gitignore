@@ -32,3 +32,6 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# english version of readme
+README.md
