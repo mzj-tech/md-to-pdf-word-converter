@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Installation script for md-to-pdf-word-converter
-# Usage: curl -sSL https://raw.githubusercontent.com/[your-org]/md-to-pdf-word-converter/main/install.sh | bash
+# Usage: curl -sSL https://raw.githubusercontent.com/mzj-tech/md-to-pdf-word-converter/main/install.sh | bash
 
 set -e
 
@@ -30,7 +30,7 @@ TEMP_DIR=$(mktemp -d)
 echo -e "${BLUE}📥 Downloading files...${NC}"
 
 # Clone the repository
-git clone --depth 1 https://github.com/[your-org]/md-to-pdf-word-converter.git "$TEMP_DIR" 2>/dev/null
+git clone --depth 1 https://github.com/mzj-tech/md-to-pdf-word-converter.git "$TEMP_DIR" 2>/dev/null
 
 # Copy necessary files
 echo -e "${BLUE}📋 Copying files to current directory...${NC}"
@@ -116,4 +116,4 @@ echo "  Batch convert to PDF:"
 echo "    ./scripts/convert-to-pdf.sh docs/ output/"
 echo ""
 echo -e "${BLUE}📚 Documentation:${NC}"
-echo "  https://github.com/[your-org]/md-to-pdf-word-converter"
+echo "  https://github.com/mzj-tech/md-to-pdf-word-converter"
