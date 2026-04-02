@@ -14,15 +14,20 @@ NC='\033[0m' # No Color
 
 # Default values
 SOURCE_DIR="${1:-.}"
-OUTPUT_DIR="${2:-./output/docx}"
+AUTO_PAGEBREAK=true
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REFERENCE_DOC=".pandoc/reference.docx"
 STYLE_SCRIPT="$SCRIPT_DIR/style-docx.py"
+PAGEBREAK_SCRIPT="$SCRIPT_DIR/auto-pagebreak.py"
+
+# Check for --no-auto-pagebreak flag to disable
+if [ "$2" = "--no-auto-pagebreak" ]; then
+  AUTO_PAGEBREAK=false
+fi
 
 echo -e "${BLUE}📄 Markdown to Word Batch Converter${NC}"
 echo "===================================="
 echo "Source: $SOURCE_DIR"
-echo "Output: $OUTPUT_DIR"
 
 # Check if pandoc is installed
 if ! command -v pandoc &> /dev/null; then
@@ -56,10 +61,8 @@ else
   USE_REFERENCE=false
 fi
 
+echo "Auto Page Breaks: Enabled (use --no-auto-pagebreak to disable)"
 echo ""
-
-# Create output directory
-mkdir -p "$OUTPUT_DIR"
 
 # Counter
 count=0
@@ -71,32 +74,37 @@ find "$SOURCE_DIR" -name "*.md" -type f > "$temp_list"
 
 while IFS= read -r file; do
   filename=$(basename "$file" .md)
-  relative_path=$(dirname "${file#$SOURCE_DIR/}")
-  
-  # Create subdirectory structure in output
-  output_subdir="$OUTPUT_DIR/$relative_path"
-  mkdir -p "$output_subdir"
-  
-  output_file="$output_subdir/$filename.docx"
-  temp_file="$output_subdir/$filename.temp.docx"
+  output_file="${file%.md}.docx"
+  temp_file="${file%.md}.temp.docx"
   
   echo -e "${GREEN}Converting:${NC} $file"
   
+  # Step 0: Auto page breaks (if enabled)
+  process_file="$file"
+  if [ "$AUTO_PAGEBREAK" = true ]; then
+    temp_md="${file%.md}.pagebreak.md"
+    python3 "$PAGEBREAK_SCRIPT" "$file" "$temp_md" 2>/dev/null
+    process_file="$temp_md"
+  fi
+  
   # Step 1: Pandoc conversion
   if [ "$USE_REFERENCE" = true ]; then
-    pandoc "$file" -o "$temp_file" \
+    pandoc "$process_file" -o "$temp_file" \
       --reference-doc="$REFERENCE_DOC" \
       2>&1 | grep -v "^$" || true
   else
-    pandoc "$file" -o "$temp_file" \
+    pandoc "$process_file" -o "$temp_file" \
       2>&1 | grep -v "^$" || true
   fi
   
   # Step 2: Apply professional styling
   python3 "$STYLE_SCRIPT" "$temp_file" "$output_file" 2>&1 | sed 's/^/  /'
   
-  # Clean up temp file
+  # Clean up temp files
   rm "$temp_file"
+  if [ "$AUTO_PAGEBREAK" = true ]; then
+    rm -f "$temp_md"
+  fi
   
   echo -e "        → $output_file"
   
@@ -109,4 +117,3 @@ rm "$temp_list"
 echo "===================================="
 echo -e "${GREEN}✅ Conversion complete!${NC}"
 echo "Converted $count file(s)"
-echo "Word files saved to: $OUTPUT_DIR"

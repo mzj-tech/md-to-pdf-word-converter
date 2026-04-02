@@ -13,6 +13,7 @@ Markdownファイルをプロフェッショナルにフォーマットされた
 - グレーボックス内のコードブロック
 - 公共セクター対応のフォーマット
 - 任意のAIツールまたは手動での動作
+- 自動インテリジェント改ページ機能
 
 ## 📦 プロジェクトでこのツールを使用する
 プロジェクトディレクトリで以下のコマンドを実行してください
@@ -57,8 +58,10 @@ npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/file_name.md
 
 **Wordに変換:**
 ```bash
-./file_conversion_tool/scripts/convert-single-word.sh folder/file_name.md folder/file.docx
+./file_conversion_tool/scripts/convert-single-word.sh folder/file_name.md
 ```
+
+両方とも、元の.mdファイルと同じフォルダにPDF/Wordファイルが生成されます。
 
 ### 一括変換
 
@@ -72,51 +75,41 @@ npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/file_name.md
 ```
 
 ## 🎨 カスタマイズ
-### PDFスタイリング
 
-`.md2pdf.js` を編集して、フォント、色、余白、またはテーブルスタイルを変更します。
+PDF/Wordのスタイルをカスタマイズしたい場合は、Kiro/Claude Codeに直接依頼できます:
 
-**カスタマイズの例:**
-```javascript
-// テーブルのフォントサイズを変更
-table {
-  font-size: 9pt;  // 10ptから縮小
-}
+**カスタマイズ例:**
+- 「PDFのテキストを大きくして」
+- 「Wordのページ余白を30mmに増やして」
+- 「テーブルの背景色を変更して」
+- 「コードブロックのフォントをConsolasに変更して」
 
-// ページの余白を変更
-pdf_options: {
-  margin: { top: '30mm', bottom: '30mm', left: '25mm', right: '25mm' }
-}
-```
-
-### Wordスタイリング
-
-Word文書は `scripts/style-docx.py` を介して自動的にプロフェッショナルなスタイリングが適用されます:
-- ✅ 罫線と交互の行の網掛けを持つテーブル
-- ✅ グレーボックス内のコードブロック(PDFと同様)
-- ✅ プロフェッショナルな見出しスタイル
-
-スタイリングスクリプトは以下を適用します:
-- **テーブル罫線**: ヘッダー行の網掛け(ライトグレー D9D9D9)と交互の行の色(F2F2F2)を持つ黒い罫線
-- **コードブロックの背景**: コードブロック周辺のグレーボックス(E8E8E8)(Pandocの「Source Code」スタイルを検出)
-- **プロフェッショナルな間隔**: 適切なインデントとパディング
-
-**Wordスタイリングをカスタマイズするには**、`scripts/style-docx.py` を編集してください:
-```python
-# テーブルヘッダーの色を変更
-shading.set(qn('w:fill'), 'D9D9D9')  # ライトグレー - この16進コードを変更
-
-# コードブロックの背景を変更
-shading.set(qn('w:fill'), 'E8E8E8')  # ライトグレー - この16進コードを変更
-
-# コードブロックのフォントを変更
-run.font.name = 'Courier New'  # 任意の等幅フォントに変更
-run.font.size = Pt(9)  # サイズを変更
-```
+AIアシスタントが自動的に設定ファイルを編集します！
 
 ### PDFでの改ページ
 
-Markdown内に改ページを追加して、不自然な分割を防ぎます:
+**自動インテリジェント改ページ (デフォルトで有効!):**
+
+このツールは、デフォルトで自動的に最適な位置に改ページを挿入します。特別な設定は不要です！
+
+自動改ページのルール:
+- ✅ H1見出しの前(最初のものを除く)
+- ✅ 長いコンテンツ(800語以上)の後のH2見出しの前
+- ✅ 長いコードブロック(30行以上)の前
+- ✅ 既存の手動改ページを保持
+
+自動改ページを無効にする場合:
+```bash
+# Word
+./file_conversion_tool/scripts/convert-single-word.sh document.md output.docx --no-auto-pagebreak
+
+# PDF
+./file_conversion_tool/scripts/convert-to-pdf.sh docs/ output/ --no-auto-pagebreak
+```
+
+**手動改ページ:**
+
+より細かい制御が必要な場合は、Markdown内に手動で改ページを追加できます:
 
 ```html
 <div class="page-break"></div>
@@ -135,13 +128,37 @@ Markdown内に改ページを追加して、不自然な分割を防ぎます:
 セクション2のコンテンツは新しいページから始まります...
 ```
 
-これにより、セクションがまとまって保たれ、ページをまたいで分割されません。
+手動改ページは自動改ページと併用でき、より細かい制御が可能です。
 
-## 🌐 言語サポート
-このツールは日本語および多言語コンテンツを完全にサポートしています:
-- 日本語文字はPDFとWordの両方で正しくレンダリングされます
-- 特別な設定は不要です
-- UTF-8エンコードされた任意のMarkdownファイルで動作します
+## 🪝 自動変換フック設定 (Kiroユーザー向け)
+
+Kiroを使用している場合、保存時に自動変換フックが利用可能です。デフォルトでは、`docs/`フォルダ内の.mdファイルのみが自動変換されます。
+
+**フックパターンをカスタマイズする:**
+
+`.kiro/hooks/auto-convert-pdf.kiro.hook`および`.kiro/hooks/auto-convert-word.kiro.hook`を編集して、どのファイルを自動変換するかを指定できます:
+
+```json
+{
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "docs/*.md",
+      "reports/*.md"
+    ]
+  }
+}
+```
+
+**パターン例:**
+- `"docs/*.md"` - docsフォルダ内のすべての.mdファイル
+- `"*.md"` - プロジェクト内のすべての.mdファイル
+- `"specific-file.md"` - 特定のファイルのみ
+- `"folder1/*.md", "folder2/*.md"` - 複数のフォルダ
+
+**フックを無効にする:**
+
+自動変換が不要な場合は、フックファイルで`"enabled": false`に設定してください。
 
 ## 🤖 AIアシスタント統合
 
@@ -151,4 +168,4 @@ Kiro、Claude Code、Cursorなどの任意のAIアシスタントとシームレ
 
 ---
 **バージョン**: 1.0.0  
-**最終更新**: 2026-03-31
+**最終更新**: 2026-04-02
