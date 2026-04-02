@@ -52,6 +52,40 @@ mkdir -p "$INSTALL_DIR"
 cp -r "$TEMP_DIR/scripts" "$INSTALL_DIR/"
 cp "$TEMP_DIR/.md2pdf.js" "$INSTALL_DIR/"
 
+# Copy Kiro hooks (if they exist in the repo)
+if [ -d "$TEMP_DIR/.kiro/hooks" ]; then
+  echo -e "${BLUE}📌 Installing Kiro hooks...${NC}"
+  mkdir -p .kiro/hooks
+  
+  # Only copy conversion-related hooks, don't overwrite existing hooks
+  if [ -f "$TEMP_DIR/.kiro/hooks/auto-convert-word.json" ]; then
+    cp "$TEMP_DIR/.kiro/hooks/auto-convert-word.json" .kiro/hooks/
+    echo -e "${GREEN}✓${NC} Installed auto-convert-word hook"
+  fi
+  
+  if [ -f "$TEMP_DIR/.kiro/hooks/auto-convert-pdf.json" ]; then
+    cp "$TEMP_DIR/.kiro/hooks/auto-convert-pdf.json" .kiro/hooks/
+    echo -e "${GREEN}✓${NC} Installed auto-convert-pdf hook"
+  fi
+fi
+
+# Copy Claude configuration (if it exists in the repo)
+if [ -d "$TEMP_DIR/.claude" ]; then
+  echo -e "${BLUE}📌 Installing Claude Code configuration...${NC}"
+  mkdir -p .claude
+  
+  # Copy all Claude config files, but don't overwrite existing ones
+  for file in "$TEMP_DIR/.claude"/*; do
+    filename=$(basename "$file")
+    if [ ! -f ".claude/$filename" ]; then
+      cp "$file" .claude/
+      echo -e "${GREEN}✓${NC} Installed $filename"
+    else
+      echo -e "${YELLOW}⚠️${NC}  Skipped $filename (already exists)"
+    fi
+  done
+fi
+
 # Make scripts executable
 chmod +x "$INSTALL_DIR/scripts"/*.sh "$INSTALL_DIR/scripts"/*.py
 
@@ -128,6 +162,14 @@ echo "    ./file_conversion_tool/scripts/convert-to-word.sh docs/ output/"
 echo ""
 echo "  Batch convert to PDF:"
 echo "    ./file_conversion_tool/scripts/convert-to-pdf.sh docs/ output/"
+echo ""
+echo -e "${BLUE}🪝 AI Assistant Integration:${NC}"
+if [ -d .kiro/hooks ]; then
+  echo "  ✓ Kiro hooks installed - auto-convert on save enabled!"
+fi
+if [ -d .claude ]; then
+  echo "  ✓ Claude Code configuration installed!"
+fi
 echo ""
 echo -e "${BLUE}📚 Documentation:${NC}"
 echo "  https://github.com/mzj-tech/md-to-pdf-word-converter"

@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Auto Convert to PDF on Save",
+  "description": "Automatically converts markdown files to PDF format whenever you save a .md file",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "docs/*.md"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js \"${FILE}\""
+  }
+}

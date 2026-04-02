@@ -13,14 +13,22 @@ NC='\033[0m' # No Color
 # Default values
 SOURCE_DIR="${1:-.}"
 OUTPUT_DIR="${2:-./output/pdf}"
+AUTO_PAGEBREAK=true
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="$(dirname "$SCRIPT_DIR")/.md2pdf.js"
+PAGEBREAK_SCRIPT="$SCRIPT_DIR/auto-pagebreak.py"
+
+# Check for --no-auto-pagebreak flag to disable
+if [ "$3" = "--no-auto-pagebreak" ]; then
+  AUTO_PAGEBREAK=false
+fi
 
 echo -e "${BLUE}📄 Markdown to PDF Batch Converter${NC}"
 echo "=================================="
 echo "Source: $SOURCE_DIR"
 echo "Output: $OUTPUT_DIR"
 echo "Config: $CONFIG_FILE"
+echo "Auto Page Breaks: Enabled (use --no-auto-pagebreak to disable)"
 echo ""
 
 # Check if config file exists
@@ -51,14 +59,22 @@ while IFS= read -r file; do
   
   echo -e "${GREEN}Converting:${NC} $file"
   
+  # Process file (with optional auto page breaks)
+  process_file="$file"
+  if [ "$AUTO_PAGEBREAK" = true ]; then
+    temp_md="${file%.md}.pagebreak.md"
+    python3 "$PAGEBREAK_SCRIPT" "$file" "$temp_md" 2>/dev/null
+    process_file="$temp_md"
+  fi
+  
   if [ -f "$CONFIG_FILE" ]; then
-    npx md-to-pdf --config-file "$CONFIG_FILE" "$file" </dev/null 2>&1 | grep -E "(started|completed)" || true
+    npx md-to-pdf --config-file "$CONFIG_FILE" "$process_file" </dev/null 2>&1 | grep -E "(started|completed)" || true
   else
-    npx md-to-pdf "$file" </dev/null 2>&1 | grep -E "(started|completed)" || true
+    npx md-to-pdf "$process_file" </dev/null 2>&1 | grep -E "(started|completed)" || true
   fi
   
   # Move the generated PDF to output directory
-  source_pdf="${file%.md}.pdf"
+  source_pdf="${process_file%.md}.pdf"
   if [ -f "$source_pdf" ]; then
     mv "$source_pdf" "$output_file"
     echo -e "        → $output_file"
@@ -66,6 +82,12 @@ while IFS= read -r file; do
   else
     echo -e "        ❌ Failed to generate PDF"
   fi
+  
+  # Clean up temp file
+  if [ "$AUTO_PAGEBREAK" = true ]; then
+    rm -f "$temp_md"
+  fi
+  
   echo ""
 done < "$temp_list"
 

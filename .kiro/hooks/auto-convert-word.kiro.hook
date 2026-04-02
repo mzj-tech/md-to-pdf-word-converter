@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Auto Convert to Word on Save",
+  "description": "Automatically converts markdown files to Word (DOCX) format whenever you save a .md file",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "docs/*.md"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "./file_conversion_tool/scripts/convert-single-word.sh \"${FILE}\" \"${FILE%.md}.docx\""
+  }
+}

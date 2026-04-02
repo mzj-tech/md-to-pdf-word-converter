@@ -6,6 +6,7 @@ output/
 # Temporary files
 *.temp.docx
 temp.docx
+*.pagebreak.md
 
 # Python
 __pycache__/
@@ -35,3 +36,6 @@ Thumbs.db
 
 # english version of readme
 README_en.md
+
+# Development steering files (not for distribution)
+.kiro/steering/readme-sync.md
