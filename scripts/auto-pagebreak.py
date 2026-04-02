@@ -60,15 +60,30 @@ class PageBreakInserter:
             count += 1
         return count
     
-    def should_add_pagebreak_before_heading(self, line):
+    def should_add_pagebreak_before_heading(self, line, line_index):
         """Determine if we should add a page break before this heading."""
         # Always break before H1 (except first one)
         if self.is_heading(line, 1):
             return len(self.output) > 0
         
-        # Break before H2 if we've accumulated enough content
+        # For H2, check if we've accumulated enough content
         if self.is_heading(line, 2):
-            return self.word_count_since_break > 800
+            if self.word_count_since_break > 800:
+                return True
+            
+            # Look ahead to find if there's a moderately-sized code block coming soon
+            # We only want to keep heading + code together if the code block is reasonable size
+            for j in range(line_index + 1, min(line_index + 11, len(self.lines))):
+                if self.is_code_block_start(self.lines[j]):
+                    code_lines = self.count_code_block_lines(j)
+                    # Only add page break for medium-sized code blocks (20-40 lines)
+                    # Very long code blocks (>40 lines) should be allowed to split naturally
+                    if 20 <= code_lines <= 40 and self.word_count_since_break > 100:
+                        return True
+                    break
+                # Stop looking if we hit another heading
+                if self.is_heading(self.lines[j]):
+                    break
         
         return False
     
@@ -101,7 +116,7 @@ class PageBreakInserter:
             
             # Check for headings
             if self.is_heading(line):
-                if self.should_add_pagebreak_before_heading(line):
+                if self.should_add_pagebreak_before_heading(line, i):
                     self.add_pagebreak()
                 self.output.append(line)
                 self.word_count_since_break += self.count_words(line)
@@ -111,8 +126,9 @@ class PageBreakInserter:
             # Check for long code blocks
             if self.is_code_block_start(line):
                 code_lines = self.count_code_block_lines(i)
-                # Add page break before long code blocks
-                if code_lines > 30 and self.word_count_since_break > 300:
+                # Add page break before moderately-long code blocks (30-50 lines)
+                # Very long code blocks (>50 lines) should be allowed to split naturally
+                if 30 <= code_lines <= 50 and self.word_count_since_break > 300:
                     self.add_pagebreak()
                 
                 # Add the code block

@@ -57,6 +57,10 @@ module.exports = {
       orphans: 3;
       widows: 3;
     }
+    /* Keep paragraphs that precede code blocks together with the code */
+    p:has(+ pre), p:has(+ * + pre) {
+      page-break-after: avoid;
+    }
     ul, ol {
       margin: 0.5em 0;
       padding-left: 1.5em;
@@ -101,6 +105,7 @@ module.exports = {
       padding: 12px 14px;
       line-height: 1.5;
       page-break-inside: avoid;
+      page-break-before: avoid;
       overflow-x: auto;
     }
     pre code {

@@ -28,6 +28,17 @@ curl -sSL https://raw.githubusercontent.com/mzj-tech/md-to-pdf-word-converter/ma
 - ✅ python-docxを自動的にインストール
 - ✅ スクリプトを実行可能にする
 
+## 📚 サンプル・テストデータ
+
+`examples/` ディレクトリには、様々なMarkdownパターンとその変換結果（PDF/Word）が含まれています：
+
+- `basic/` - 基本的なMarkdown要素
+- `tables/` - テーブル表示例
+- `code-heavy/` - 長いコードブロック例
+- `mixed/` - 総合的な例
+
+詳細は [examples/README.md](examples/README.md) を参照してください。
+
 ## 🛠️ インストール
 ### 前提条件
 **PDF生成の場合:**
@@ -53,7 +64,7 @@ pip3 install python-docx
 
 **PDFに変換:**
 ```bash
-npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/file_name.md
+./file_conversion_tool/scripts/convert-with-pagebreak.sh folder/file_name.md
 ```
 
 **Wordに変換:**
@@ -62,6 +73,15 @@ npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js folder/file_name.md
 ```
 
 両方とも、元の.mdファイルと同じフォルダにPDF/Wordファイルが生成されます。
+
+自動改ページを無効にする場合:
+```bash
+# PDF
+./file_conversion_tool/scripts/convert-with-pagebreak.sh folder/file_name.md --no-auto-pagebreak
+
+# Word
+./file_conversion_tool/scripts/convert-single-word.sh folder/file_name.md --no-auto-pagebreak
+```
 
 ### 一括変換
 
@@ -95,17 +115,12 @@ AIアシスタントが自動的に設定ファイルを編集します！
 自動改ページのルール:
 - ✅ H1見出しの前(最初のものを除く)
 - ✅ 長いコンテンツ(800語以上)の後のH2見出しの前
-- ✅ 長いコードブロック(30行以上)の前
+- ✅ 中程度のコードブロック(20-40行)が続くH2見出しの前
+- ✅ 中程度のコードブロック(30-50行)の前
 - ✅ 既存の手動改ページを保持
+- ✅ コードブロックは見出しと一緒に保持されます
 
-自動改ページを無効にする場合:
-```bash
-# Word
-./file_conversion_tool/scripts/convert-single-word.sh document.md output.docx --no-auto-pagebreak
-
-# PDF
-./file_conversion_tool/scripts/convert-to-pdf.sh docs/ output/ --no-auto-pagebreak
-```
+**ベストプラクティス:** 複数のコマンドを含むドキュメントでは、1つの大きなブロックではなく、各コマンドごとに小さなコードブロックを使用してください。これにより、ページレイアウトが改善され、説明とコマンドが一緒に保持されます。
 
 **手動改ページ:**
 
@@ -129,6 +144,8 @@ AIアシスタントが自動的に設定ファイルを編集します！
 ```
 
 手動改ページは自動改ページと併用でき、より細かい制御が可能です。
+
+**注意:** Wordでは、非常に長いコードブロック(1ページに収まらない場合)は自動的に分割される場合があります。これはWordの制限です。重要なコードブロックの前に手動で改ページを追加することで、より細かく制御できます。
 
 ## 🪝 自動変換フック設定 (Kiroユーザー向け)
 

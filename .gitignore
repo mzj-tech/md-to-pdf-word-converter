@@ -1,7 +1,11 @@
 # Output directories
 output/
+
+# Generated files (except examples)
 *.pdf
 *.docx
+!examples/**/*.pdf
+!examples/**/*.docx
 
 # Temporary files
 *.temp.docx
@@ -39,3 +43,7 @@ README_en.md
 
 # Development steering files (not for distribution)
 .kiro/steering/readme-sync.md
+
+# TEST files
+TEST/
+file_conversion_tool/
