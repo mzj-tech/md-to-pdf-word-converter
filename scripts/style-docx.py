@@ -54,7 +54,7 @@ def add_table_borders(table):
                 cell._element.get_or_add_tcPr().append(shading)
 
 def style_code_blocks(doc):
-    """Add gray background to code blocks (paragraphs with 'Source Code' style)."""
+    """Add gray background to code blocks and prevent page breaks within them."""
     for paragraph in doc.paragraphs:
         # Check if paragraph is a code block (Pandoc uses "Source Code" style)
         if paragraph.style.name == 'Source Code':
@@ -63,6 +63,15 @@ def style_code_blocks(doc):
             shading = OxmlElement('w:shd')
             shading.set(qn('w:fill'), 'E8E8E8')  # Light gray background
             pPr.append(shading)
+            
+            # Prevent page breaks within code blocks
+            # Add "keep lines together" property
+            keepLines = OxmlElement('w:keepLines')
+            pPr.append(keepLines)
+            
+            # Add "keep with next" to prevent splitting from following paragraph
+            keepNext = OxmlElement('w:keepNext')
+            pPr.append(keepNext)
             
             # Add padding/spacing
             paragraph.paragraph_format.left_indent = Inches(0.25)
@@ -74,6 +83,22 @@ def style_code_blocks(doc):
             for run in paragraph.runs:
                 run.font.name = 'Courier New'
                 run.font.size = Pt(9)
+
+def keep_headings_with_content(doc):
+    """Prevent page breaks between headings and their following content."""
+    for paragraph in doc.paragraphs:
+        # Check if paragraph is a heading
+        if paragraph.style.name.startswith('Heading'):
+            pPr = paragraph._element.get_or_add_pPr()
+            
+            # Add "keep with next" to prevent heading from being separated from content
+            keepNext = OxmlElement('w:keepNext')
+            pPr.append(keepNext)
+            
+            # Prevent page break before heading (optional, for cleaner layout)
+            # pageBreakBefore = OxmlElement('w:pageBreakBefore')
+            # pageBreakBefore.set(qn('w:val'), '0')
+            # pPr.append(pageBreakBefore)
 
 def style_document(input_path, output_path):
     """Apply professional styling to Word document."""
@@ -88,6 +113,10 @@ def style_document(input_path, output_path):
     # Style code blocks
     print("💻 Styling code blocks...")
     style_code_blocks(doc)
+    
+    # Keep headings with their content
+    print("📑 Preventing heading orphans...")
+    keep_headings_with_content(doc)
     
     # Save styled document
     print(f"💾 Saving styled document: {output_path}")

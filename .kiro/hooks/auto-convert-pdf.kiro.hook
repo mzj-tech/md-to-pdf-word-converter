@@ -11,6 +11,6 @@
   },
   "then": {
     "type": "runCommand",
-    "command": "npx md-to-pdf --config-file file_conversion_tool/.md2pdf.js \"${FILE}\""
+    "command": "./file_conversion_tool/scripts/convert-with-pagebreak.sh \"${FILE}\""
   }
 }
